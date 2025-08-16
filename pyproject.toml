@@ -1,0 +1,14 @@
+[project]
+name = "pendo-mcp-server"
+version = "0.1.0"
+description = "MCP server for Pendo API integration"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp[cli]",
+    "httpx",
+    "python-dotenv",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
