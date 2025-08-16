@@ -29,19 +29,36 @@ async def test_server():
             
             # Check that our tool functions exist
             tools_defined = []
-            if hasattr(pendo_mcp_server, 'list_pages'):
-                tools_defined.append('list_pages')
-            if hasattr(pendo_mcp_server, 'get_visitor_details'):
-                tools_defined.append('get_visitor_details')
-            if hasattr(pendo_mcp_server, 'get_active_visitors'):
-                tools_defined.append('get_active_visitors')
+            expected_tools = [
+                'list_pages',
+                'get_visitor_details', 
+                'get_active_visitors',
+                'list_features',
+                'get_feature_details',
+                'list_track_events',
+                'search_track_events',
+                'get_account_details',
+                'search_accounts_by_metadata',
+                'list_account_visitors'
+            ]
+            
+            for tool_name in expected_tools:
+                if hasattr(pendo_mcp_server, tool_name):
+                    tools_defined.append(tool_name)
             
             print(f"✅ Number of tools defined: {len(tools_defined)}")
             for tool_name in tools_defined:
                 print(f"   - {tool_name}")
             
-            if len(tools_defined) == 3:
-                print("\n✅ All 3 tools are properly configured!")
+            # Check if all expected tools are present
+            missing_tools = [t for t in expected_tools if t not in tools_defined]
+            if missing_tools:
+                print(f"\n⚠️  Missing tools: {', '.join(missing_tools)}")
+            
+            if len(tools_defined) == len(expected_tools):
+                print(f"\n✅ All {len(expected_tools)} tools are properly configured!")
+            else:
+                print(f"\n⚠️  {len(tools_defined)}/{len(expected_tools)} tools configured")
             
             print("\n✅ Server is ready to use!")
             print("\nTo connect to Claude Desktop, add this to your claude_desktop_config.json:")
