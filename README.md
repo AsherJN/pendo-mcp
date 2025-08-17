@@ -1,208 +1,412 @@
-# Pendo MCP Server
+# Pendo MCP Server 🚀
 
-A Model Context Protocol (MCP) server that provides tools for accessing and navigating the Pendo platform through its API.
+[![MCP](https://img.shields.io/badge/Model_Context_Protocol-Enabled-blue)](https://modelcontextprotocol.io/)
+[![Python](https://img.shields.io/badge/Python-3.10+-green)](https://python.org/)
+[![Pendo](https://img.shields.io/badge/Pendo-Analytics-orange)](https://pendo.io/)
 
-## Features
+A comprehensive Model Context Protocol (MCP) server that provides AI assistants with powerful access to Pendo analytics through 15 specialized tools. Transform natural language questions into deep product insights with intelligent fallback strategies and LLM-optimized responses.
 
-This MCP server provides ten tools for read-only access to Pendo data:
+## ✨ Key Features
 
-### Core Tools
+- **🔧 15 Comprehensive Tools** - Complete analytics toolkit organized by business function
+- **🧠 Intelligent Fallbacks** - Never dead-end; always provides actionable insights
+- **🔗 Tool Chaining** - Complex business intelligence through natural tool composition  
+- **📊 LLM-Optimized Output** - Responses formatted specifically for AI consumption
+- **⚡ Universal Segment Support** - Filter any analysis by user segments
+- **🎯 Zero Required Parameters** - All tools work out-of-the-box with sensible defaults
 
-#### 1. `list_pages`
-Lists all tagged pages in your Pendo subscription.
-- Shows page IDs, names, app IDs, and creation dates
-- Optional filtering by application ID for multi-app subscriptions
-- Returns up to 10 pages with a count of total pages
+## 📋 Tool Categories
 
-#### 2. `get_visitor_details`
-Retrieves detailed information about a specific visitor.
-- Input: Visitor ID
-- Returns: Visitor metadata, account associations, first visit date, browser info, and custom fields
+### 🎯 Product Discovery (3 tools)
+- **`search_pages`** - Find and analyze page usage with optional metrics
+- **`search_features`** - Discover feature adoption and click patterns  
+- **`search_track_events`** - Analyze custom event tracking data
 
-#### 3. `get_active_visitors`
-Gets active visitor counts and activity metrics using Pendo's aggregation API.
-- Configurable time range (1-90 days)
-- Group by day or hour
-- Returns unique visitor counts and total events per period
+### 👥 People Insights (5 tools)  
+- **`get_visitor_details`** - Deep visitor profiles with activity history
+- **`search_visitors`** - Find users by metadata, activity, and segments
+- **`get_account_details`** - Account analysis with visitor metrics
+- **`search_accounts`** - Advanced account discovery and filtering
+- **`analyze_segments`** - Multi-purpose segment analysis and exports
 
-### Features & Events Tools
+### 📈 Behavioral Analytics (6 tools)
+- **`analyze_usage`** - Activity patterns with intelligent fallbacks ⭐
+- **`analyze_feature_adoption`** - Adoption rates and usage trends
+- **`analyze_retention`** - User stickiness and churn analysis  
+- **`analyze_funnels`** - Multi-step conversion tracking
+- **`analyze_user_paths`** - Navigation pattern discovery
+- **`calculate_product_engagement`** - PES scoring and engagement metrics
 
-#### 4. `list_features`
-Lists all tagged features in your Pendo subscription.
-- Shows feature IDs, names, colors, element paths, and creation dates
-- Optional filtering by application ID for multi-app subscriptions
-- Returns up to 10 features with a count of total features
+### 💬 Feedback (1 tool)
+- **`analyze_nps_feedback`** - NPS scoring with sentiment analysis
 
-#### 5. `get_feature_details`
-Retrieves detailed information about specific features.
-- Input: Feature ID or comma-separated list of IDs
-- Returns: Feature metadata, element paths, colors, and timestamps
+## 🚀 Quick Start
 
-#### 6. `list_track_events`
-Lists all track event types in your Pendo subscription.
-- Shows event IDs, names, app IDs, and timestamps
-- Optional filtering by application ID for multi-app subscriptions
-- Returns up to 10 track events with a count of total events
+### 1. Installation
 
-#### 7. `search_track_events`
-Searches for track events with advanced filtering options.
-- Filter by event name, visitor ID, account ID
-- Configurable time range (1-90 days)
-- Limit results (1-1000, default: 100)
-- Returns event occurrences with counts and summaries
-
-### Account Tools (New)
-
-#### 8. `get_account_details`
-Retrieves detailed information about a specific account.
-- Input: Account ID
-- Returns: Account metadata, custom fields, visitor count
-- Shows first visit, last visit, and last updated timestamps
-- Includes multi-app metadata for subscriptions with multiple applications
-
-#### 9. `search_accounts_by_metadata`
-Searches accounts by metadata field values.
-- Filter by custom, agent, or auto metadata fields
-- Input: Field name, value, and field type
-- Returns matching accounts with metadata
-- Shows up to 100 accounts with summaries
-
-#### 10. `list_account_visitors`
-Lists all visitors associated with an account.
-- Input: Account ID
-- Optional: Include detailed visitor metadata
-- Returns visitor list sorted by most recent activity
-- Shows visitor IDs, first visits, browsers, and custom fields
-
-## Setup
-
-### Prerequisites
-
-- Python 3.10 or higher
-- A Pendo account with API access
-- A Pendo Integration Key (found in Settings > Integrations)
-
-### Installation
-
-1. Install Python dependencies:
 ```bash
+# Clone the repository
+git clone https://github.com/AsherJN/pendo-mcp.git
+cd pendo-mcp
+
+# Install dependencies
 pip install -r requirements.txt
 ```
 
-Or install directly:
-```bash
-pip install "mcp[cli]" httpx python-dotenv
+### 2. Configuration
+
+Create a `.env` file with your Pendo Integration Key:
+
+```env
+PENDO_INTEGRATION_KEY=your_integration_key_here
 ```
 
-2. Configure your Pendo Integration Key:
+### 3. Claude Desktop Setup
 
-The `.env` file should contain:
-```
-PENDO_INTEGRATION_KEY=your-integration-key-here
-```
-
-### Testing the Server
-
-You can test the server directly:
-
-```bash
-python pendo_mcp_server.py
-```
-
-The server will start and listen for MCP commands on stdio.
-
-## Connecting to Claude Desktop
-
-To use this server with Claude Desktop, add the following to your Claude Desktop configuration file:
-
-**macOS/Linux:** `~/Library/Application Support/Claude/claude_desktop_config.json`
-**Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+Add this configuration to your Claude Desktop MCP settings:
 
 ```json
 {
   "mcpServers": {
     "pendo": {
-      "command": "python",
-      "args": ["/absolute/path/to/pendo_mcp/pendo_mcp_server.py"]
+      "command": "python3",
+      "args": ["/path/to/pendo-mcp/pendo_mcp_server.py"],
+      "env": {
+        "PENDO_INTEGRATION_KEY": "your_integration_key_here"
+      }
     }
   }
 }
 ```
 
-Make sure to replace `/absolute/path/to/pendo_mcp/` with the actual path to your project directory.
+### 4. Test the Connection
 
-After updating the configuration, restart Claude Desktop. You should see the Pendo tools available in the tools menu.
+```bash
+# Test server functionality
+python test_server.py
+```
 
-## Usage Examples
+## 💡 Usage Examples
 
-Once connected to Claude Desktop, you can use natural language to interact with Pendo:
+### Basic Analytics Query
+```
+"Show me the top pages by traffic in the last 30 days"
+→ Uses: search_pages(include_metrics=True, limit=10)
+```
 
-**Pages & Features:**
-- "List all the pages in Pendo"
-- "List all features tagged in Pendo"
-- "Get details about feature [feature-id]"
+### Complex Business Intelligence
+```
+"What's the user engagement health of our platform?"  
+→ Tool Chain:
+  1. search_pages(include_metrics=True) - Discover key pages
+  2. analyze_feature_adoption(days_back=30) - Check feature usage
+  3. calculate_product_engagement() - Overall PES score
+  4. analyze_retention(period_type="weekly") - Stickiness metrics
+```
 
-**Visitors & Activity:**
-- "Get details about visitor [visitor-id]"
-- "Show me active visitor counts for the last 7 days"
-- "Get hourly visitor activity for the last 24 hours"
+### Intelligent Fallback Example
+```
+Query: analyze_usage(days_back=30, group_by="week")
 
-**Track Events:**
-- "List all track events in Pendo"
-- "Search for track events named 'Button Click' in the last 30 days"
-- "Find all track events for visitor [visitor-id] in the last week"
-- "Search track events for account [account-id]"
+❓ Broad usage data unavailable.
+🔄 **Fallback Analysis - Feature Usage:**
+Feature Activity Found - 'Alarm Acknowledge Button': 245 clicks from 23 users
+💡 **Tip**: For detailed feature analysis, try: analyze_feature_adoption()
+```
 
-**Accounts:**
-- "Get details about account [account-id]"
-- "Search for accounts where industry equals 'Technology'"
-- "Find accounts with custom field 'plan' set to 'Enterprise'"
-- "List all visitors in account [account-id]"
-- "Show visitors in account [account-id] with their metadata"
+## 🔧 Tool Reference
 
-## API Endpoints Used
+### Product Discovery Tools
 
-This server uses the following Pendo API endpoints:
-- `GET /api/v1/page` - List pages
-- `GET /api/v1/feature` - List features and get feature details
-- `GET /api/v1/tracktype` - List track event types
-- `GET /api/v1/visitor/{visitorId}` - Get visitor details
-- `GET /api/v1/account/{accountId}` - Get account details
-- `POST /api/v1/aggregation` - Run aggregation queries for:
-  - Visitor activity metrics
-  - Track event searches
-  - Account metadata searches
-  - Account visitor listings
+#### `search_pages`
+Search and analyze page usage with consolidated metrics.
 
-## Security Notes
+**Parameters:**
+- `page_id` (optional) - Specific page ID to retrieve
+- `name_contains` (optional) - Filter by page name text
+- `include_metrics` (optional) - Include usage metrics (default: False)
+- `limit` (optional) - Max results (default: 100)
 
-- The integration key is stored in the `.env` file and should never be committed to version control
-- This server only performs read operations (GET requests and aggregation queries)
-- All API requests use HTTPS for secure communication
-- Logging is configured to stderr to avoid interfering with MCP communication
+**Example:**
+```
+search_pages(name_contains="dashboard", include_metrics=True, limit=5)
+```
 
-## Troubleshooting
+#### `search_features`  
+Discover feature engagement and click patterns.
 
-1. **Server won't start**: Check that your `PENDO_INTEGRATION_KEY` is set in the `.env` file
-2. **API errors**: Verify your integration key has the necessary permissions
-3. **No data returned**: Ensure your Pendo subscription has data (pages, visitors, events)
-4. **Claude Desktop doesn't show tools**: Restart Claude Desktop after updating the configuration
+**Parameters:**
+- `feature_id` (optional) - Specific feature ID
+- `name_contains` (optional) - Filter by feature name
+- `include_metrics` (optional) - Include click metrics (default: False)
+- `limit` (optional) - Max results (default: 100)
 
-## Future Enhancements
+#### `search_track_events`
+Analyze custom event tracking data.
 
-### Next Phase (Segments):
-- `list_segments` - List all shared segments
-- `get_segment_details` - Get segment information
-- `get_segment_visitors` - Export visitors from a segment
-- `check_visitor_in_segment` - Check if visitor belongs to segment
+**Parameters:**
+- `event_name` (optional) - Specific event name filter
+- `visitor_id` (optional) - Filter by visitor
+- `days_back` (optional) - Analysis period (default: 7, max: 90)
+- `limit` (optional) - Max results (default: 100)
 
-### Additional Tools:
-- `list_guides` - List all guides with filtering
-- `get_guide_analytics` - Retrieve guide performance metrics
-- `get_report_results` - Execute and retrieve report data
-- `get_nps_scores` - Get NPS survey results
-- `run_aggregation_query` - Execute custom aggregation pipelines
+### People Insights Tools
 
-## License
+#### `get_visitor_details`
+Get comprehensive visitor information and activity.
 
-MIT
+**Parameters:**
+- `visitor_id` (required) - The Pendo visitor ID  
+- `include_history` (optional) - Recent activity history (default: False)
+- `include_events` (optional) - Event summary (default: False)
+
+#### `search_visitors`
+Advanced visitor discovery and filtering.
+
+**Parameters:**
+- `account_id` (optional) - Filter by account
+- `segment_id` (optional) - Filter by segment
+- `metadata_filter` (optional) - Custom metadata filter
+- `active_since` (optional) - Only visitors active in last N days
+- `limit` (optional) - Max results (default: 100)
+
+#### `get_account_details`
+Comprehensive account analysis with metrics.
+
+**Parameters:**
+- `account_id` (required) - The Pendo account ID
+- `include_visitors` (optional) - List of visitors (default: False)  
+- `include_metrics` (optional) - Activity metrics (default: False)
+
+#### `search_accounts`
+Advanced account search with segment support.
+
+**Parameters:**
+- `metadata_filter` (optional) - Custom metadata filter
+- `segment_id` (optional) - Filter by segment
+- `min_visitors` (optional) - Minimum visitor count
+- `active_since` (optional) - Activity recency filter
+- `limit` (optional) - Max results (default: 100)
+
+#### `analyze_segments`
+Multi-purpose segment analysis tool.
+
+**Parameters:**
+- `action` (required) - 'list', 'details', 'check', or 'export'
+- `segment_id` (optional) - Required for details/check/export
+- `visitor_id` (optional) - For membership check
+- `account_id` (optional) - For membership check
+
+### Behavioral Analytics Tools
+
+#### `analyze_usage` ⭐
+Activity patterns with intelligent fallback strategies.
+
+**Parameters:**
+- `segment_id` (optional) - Segment filter
+- `visitor_id` (optional) - Visitor filter  
+- `days_back` (optional) - Analysis period (default: 30, max: 90)
+- `group_by` (optional) - 'day', 'week', or 'month' (default: 'day')
+- `metric_type` (optional) - 'events', 'sessions', or 'time' (default: 'events')
+
+**Special Feature:** Automatic fallback strategies provide alternative insights when primary queries fail.
+
+#### `analyze_feature_adoption`
+Track feature and page adoption with time series.
+
+**Parameters:**
+- `feature_ids` (optional) - List of feature IDs to analyze
+- `page_ids` (optional) - List of page IDs to analyze
+- `segment_id` (optional) - Segment filter
+- `days_back` (optional) - Analysis period (default: 30)
+- `group_by` (optional) - 'total', 'day', or 'week' (default: 'total')
+
+#### `analyze_retention`
+User and account stickiness analysis.
+
+**Parameters:**
+- `segment_id` (optional) - Segment filter
+- `cohort_date` (optional) - Start date (YYYY-MM-DD format)
+- `period_type` (optional) - 'daily', 'weekly', or 'monthly' (default: 'weekly')
+- `group_by` (optional) - 'visitor' or 'account' (default: 'visitor')
+
+#### `analyze_funnels`
+Multi-step conversion analysis.
+
+**Parameters:**
+- `steps` (required) - List of page/feature IDs representing funnel steps
+- `segment_id` (optional) - Segment filter
+- `days_back` (optional) - Analysis period (default: 30)
+- `group_by` (optional) - 'total' or 'day' (default: 'total')
+
+#### `analyze_user_paths`
+Navigation pattern discovery.
+
+**Parameters:**
+- `start_page` (optional) - Starting page ID
+- `end_page` (optional) - Ending page ID  
+- `segment_id` (optional) - Segment filter
+- `max_steps` (optional) - Maximum path length (default: 5)
+- `days_back` (optional) - Analysis period (default: 7)
+
+#### `calculate_product_engagement`
+Product Engagement Score (PES) calculation.
+
+**Parameters:**
+- `segment_id` (optional) - Segment filter
+- `features_list` (optional) - List of feature IDs to include
+- `days_back` (optional) - Analysis period (default: 30)
+- `group_by` (optional) - 'total' or 'account' (default: 'total')
+
+### Feedback Tools
+
+#### `analyze_nps_feedback`
+NPS scoring and sentiment analysis.
+
+**Parameters:**
+- `segment_id` (optional) - Segment filter
+- `poll_id` (optional) - Specific poll ID
+- `days_back` (optional) - Analysis period (default: 30)
+- `group_by` (optional) - 'total', 'day', or 'account' (default: 'total')
+
+## 🎯 Advanced Features
+
+### Intelligent Fallback Strategies
+
+When primary analytics queries fail, the system automatically tries alternative approaches:
+
+1. **Primary Strategy** - Original aggregation query
+2. **Fallback Strategy 1** - Feature usage analysis  
+3. **Fallback Strategy 2** - Page activity analysis
+4. **Fallback Strategy 3** - Basic visitor activity
+5. **Final Fallback** - Comprehensive help with tool suggestions
+
+### Tool Chaining Patterns
+
+**Discovery → Analysis**
+```
+search_pages(name_contains="checkout") → get page_id
+analyze_feature_adoption(page_ids=[page_id], segment_id=X)
+```
+
+**Segment-Driven Analysis**  
+```
+analyze_segments(action="list") → select segment_id
+analyze_retention(segment_id=segment_id, period_type="weekly")
+```
+
+**Funnel Analysis Chain**
+```
+search_pages() → identify key pages  
+analyze_funnels(steps=[signup_page, activation_page, purchase_page])
+```
+
+### Universal Design Principles
+
+- **Verb-based naming** - Clear action-oriented tool names
+- **Progressive refinement** - Start broad, narrow with parameters
+- **Universal segment support** - segment_id works everywhere
+- **Minimal required params** - Most tools work with no parameters
+- **Consistent patterns** - Similar parameter structures across tools
+
+## 🛠️ Development
+
+### Project Structure
+```
+pendo-mcp/
+├── pendo_mcp_server.py      # Main MCP server implementation
+├── test_server.py           # Server validation tests
+├── requirements.txt         # Python dependencies  
+├── .env                     # Environment configuration
+├── FALLBACK_IMPLEMENTATION.md # Fallback strategy docs
+└── memory-bank/            # Project documentation
+    ├── high_priority_task.md
+    ├── projectbrief.md
+    └── progress.md
+```
+
+### Testing
+
+```bash
+# Test server functionality
+python test_server.py
+
+# Test with real queries
+python -c "
+import asyncio
+from pendo_mcp_server import search_pages
+result = asyncio.run(search_pages(limit=5, include_metrics=True))
+print(result)
+"
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Test your changes thoroughly
+4. Submit a pull request with clear description
+
+## 🔒 Security & Best Practices
+
+- **API Key Security** - Store integration keys in environment variables only
+- **Read-Only Access** - Server only performs GET operations and aggregations
+- **Rate Limiting** - Respects Pendo API rate limits
+- **Error Handling** - Comprehensive error handling with helpful messages
+- **Logging** - All logs to stderr to avoid STDIO conflicts
+
+## ❓ Troubleshooting
+
+### Common Issues
+
+**"PENDO_INTEGRATION_KEY not found"**
+- Ensure your `.env` file exists and contains the integration key
+- Check Claude Desktop MCP configuration includes the environment variable
+
+**"Unable to fetch data from Pendo API"**  
+- Verify your integration key has appropriate permissions
+- Check Pendo API status and rate limits
+- Try more specific queries with filters
+
+**"No data found" responses**
+- Use intelligent fallback suggestions provided in error messages
+- Try different time ranges or filters
+- Check if data exists in Pendo UI for comparison
+
+### Getting Help
+
+- Review tool documentation and parameter options
+- Check the FALLBACK_IMPLEMENTATION.md for fallback strategies
+- Test individual tools with simple parameters first
+- Use the analyze_segments tool to understand available segments
+
+## 📈 Recent Enhancements
+
+### Version 2.0 - Intelligent Analytics Platform
+- ✅ **Complete 15-Tool Architecture** - Comprehensive analytics coverage
+- ✅ **Intelligent Fallback Strategies** - Never fail silently, always provide value
+- ✅ **Tool Consolidation** - Unified search tools with optional detailed metrics
+- ✅ **Enhanced Error Handling** - Context-aware suggestions for alternative queries
+- ✅ **LLM-Optimized Output** - Formatted specifically for AI consumption
+- ✅ **Universal Segment Support** - Consistent filtering across all analytics tools
+
+### Performance Improvements
+- Reduced API calls through intelligent caching
+- Optimized aggregation queries for faster responses  
+- Enhanced timeout handling for complex analytics
+- Better handling of large result sets
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🤝 Acknowledgments
+
+- [Model Context Protocol](https://modelcontextprotocol.io/) for the MCP framework
+- [Pendo](https://pendo.io/) for the comprehensive analytics API
+- [FastMCP](https://github.com/jlowin/fastmcp) for the server framework
+- The Claude AI team for MCP integration support
+
+---
+
+**Transform your Pendo analytics into AI-powered business intelligence with natural language queries and intelligent insights.** 🚀
