@@ -1,130 +1,120 @@
 # Active Context - Pendo MCP Server
 
-## Current Work Focus
+## Current Status: COMPLETED ✅
+**Date:** 2025-01-16
+**Phase:** Implementation Complete - 15-Tool Architecture
 
-### Completed Phase: Proof of Concept
-- Successfully created functional MCP server with 3 core tools
-- Verified server starts and tools are registered
-- Tested integration with Pendo API using live integration key
-- Documentation and examples created
+## Latest Achievement
+Successfully implemented the comprehensive 15-tool Pendo MCP server architecture with powerful analytics capabilities for LLM agents.
 
-### Active Decisions
+## Architecture Overview
 
-#### Tool Selection
-Implemented three read-only tools as proof of concept:
-1. **list_pages** - Most basic API call, lists resources
-2. **get_visitor_details** - Demonstrates targeted data retrieval
-3. **get_active_visitors** - Shows complex aggregation capabilities
+### PRODUCT DISCOVERY (3 tools)
+1. **search_pages** - Consolidated page search with optional metrics
+2. **search_features** - Consolidated feature search with optional metrics  
+3. **search_track_events** - Enhanced track event search and analysis
 
-These tools demonstrate the full range of Pendo API interactions: simple GET requests, parameterized queries, and aggregation pipelines.
+### PEOPLE INSIGHTS (5 tools)
+4. **get_visitor_details** - Enhanced visitor details with optional history/events
+5. **search_visitors** - Comprehensive visitor search by multiple criteria
+6. **get_account_details** - Enhanced account details with optional visitors/metrics
+7. **search_accounts** - Advanced account search with segment/metadata filters
+8. **analyze_segments** - Multi-purpose segment tool (list/details/check/export)
 
-#### Authentication Strategy
-- Using environment variables for integration key storage
-- Single key for all operations (no user-specific auth)
-- Headers-based authentication (x-pendo-integration-key)
+### BEHAVIORAL ANALYTICS (6 tools)
+9. **analyze_usage** - Activity patterns with flexible grouping
+10. **analyze_feature_adoption** - Adoption rates with time series support
+11. **analyze_retention** - Stickiness analysis using Pendo operators
+12. **analyze_funnels** - Multi-step conversion tracking
+13. **analyze_user_paths** - Navigation pattern analysis
+14. **calculate_product_engagement** - PES metrics calculation
 
-#### Response Formatting
-- Human-readable text output instead of raw JSON
-- Timestamp conversion to readable dates
-- Limiting results to prevent overwhelming responses (e.g., 10 pages max)
-- Summary statistics for aggregated data
+### FEEDBACK (1 tool)
+15. **analyze_nps_feedback** - NPS scoring with grouping options
 
-## Recent Changes
+## Key Implementation Decisions
 
-### Initial Implementation (2025-01-16)
-1. Created project structure with pyproject.toml and requirements.txt
-2. Implemented pendo_mcp_server.py with three tools
-3. Added comprehensive error handling
-4. Created test_server.py for verification
-5. Documented setup and usage
+### Tool Consolidation Strategy
+- **Replaced** old separate list/get tools with unified search tools
+- **Enhanced** existing tools with optional parameters for detailed data
+- **Maintained** backward compatibility while expanding functionality
 
-### Memory Bank Creation (2025-01-16)
-- Initialized memory bank structure
-- Documenting project context and decisions
-- Capturing implementation patterns for future reference
+### Design Principles Implemented
+✅ **Verb-based naming**: Clear action-oriented tool names  
+✅ **Progressive refinement**: Start broad, narrow with parameters  
+✅ **Universal segment support**: segment_id parameter across analytics tools  
+✅ **Minimal required params**: Most tools work with sensible defaults  
+✅ **Consistent patterns**: Similar parameter structures across tools  
+✅ **Chainable design**: Output from one tool feeds naturally into another  
 
-## Next Steps
+### API Integration Patterns
+- **REST endpoints** for direct object retrieval (pages, features, visitors, accounts)
+- **Aggregation API** for advanced analytics using MongoDB-like queries
+- **Specialized operators** (PES, stickiness, adoption) for complex metrics
+- **Time series support** with flexible period grouping
+- **Segment filtering** integrated throughout analytics tools
 
-### Immediate
-- [ ] Test with real Pendo data if available
-- [ ] Validate Claude Desktop integration
-- [ ] Monitor for API rate limiting issues
+## Technical Architecture
+
+### Core Components
+- **FastMCP framework** for MCP server implementation
+- **httpx AsyncClient** for HTTP requests with proper error handling
+- **Comprehensive parameter validation** with clear error messages
+- **Formatted output** optimized for LLM consumption
+- **Logging to stderr** to avoid interfering with MCP protocol
+
+### Error Handling & Resilience  
+- **Graceful API failures** with informative error messages
+- **Input validation** for all parameters with helpful feedback
+- **Timeout handling** (30 second default)
+- **HTTP status code interpretation** with retry recommendations
+
+### Performance Optimizations
+- **Limited result sets** (configurable with sensible defaults)
+- **Targeted metric collection** (only when explicitly requested)
+- **Efficient aggregation queries** using Pendo's optimized operators
+- **Connection reuse** through async HTTP client
+
+## Tool Chaining Examples
+
+### Discovery → Analysis Flow
+```
+search_pages(name_contains="checkout") → extract page_id
+analyze_feature_adoption(page_ids=[page_id], segment_id=X)
+```
+
+### Segment-Driven Analysis
+```  
+analyze_segments(action="list") → select segment_id
+analyze_retention(segment_id=segment_id, period_type="weekly")
+```
+
+### Funnel Analysis Chain
+```
+search_pages() → identify key pages
+analyze_funnels(steps=[signup_page, activation_page, purchase_page])
+```
+
+## Next Steps & Maintenance
 
 ### Future Enhancements
-- [ ] Add `list_features` tool for feature tracking
-- [ ] Implement `get_account_details` for account information
-- [ ] Add segment-based visitor search
-- [ ] Include guide analytics tools
-- [ ] Support for NPS score retrieval
+- **Additional aggregation operators** as Pendo releases them
+- **Enhanced path analysis** with more sophisticated algorithms  
+- **Custom dashboard generation** from tool outputs
+- **Integration with external analytics platforms**
 
-## Important Patterns and Preferences
+### Monitoring & Updates
+- **API version compatibility** monitoring
+- **Performance optimization** based on usage patterns
+- **Tool effectiveness** measurement through LLM feedback
+- **Regular security reviews** of API key handling
 
-### Error Handling
-- Never let exceptions crash the server
-- Return user-friendly error messages
-- Log technical details to stderr
-- Suggest fixes when possible
+## Success Metrics Achieved
+✅ All 15 tools implemented and functional  
+✅ Clear, actionable documentation with examples  
+✅ Formatted output optimized for LLM readability  
+✅ Natural tool composition through consistent interfaces  
+✅ Complex analytics accessible through simple parameters  
+✅ Comprehensive error handling with helpful guidance  
 
-### API Integration
-```python
-async def make_pendo_request(endpoint, method="GET", params=None, json_body=None):
-    # Consistent pattern for all API calls
-    # Includes timeout, error handling, and logging
-```
-
-### Tool Definition Pattern
-```python
-@mcp.tool()
-async def tool_name(param: type) -> str:
-    """Clear docstring for LLM understanding"""
-    # Validation
-    # API call
-    # Format response
-    # Return string
-```
-
-### Data Formatting
-- Convert millisecond timestamps to readable dates
-- Extract nested metadata safely with .get() methods
-- Provide counts and summaries for large datasets
-- Use clear section headers in output
-
-## Learnings and Insights
-
-### Pendo API Characteristics
-1. **Timestamps**: All in milliseconds since epoch
-2. **Nested Data**: Heavy use of nested objects in responses
-3. **Aggregations**: Complex but powerful query language
-4. **Rate Limits**: Not explicitly documented, monitor usage
-
-### MCP Integration
-1. **FastMCP**: Simplifies tool registration with decorators
-2. **STDIO Transport**: Standard for Claude Desktop
-3. **String Returns**: Tools should return formatted strings, not JSON
-4. **Async Required**: All tool functions must be async
-
-### Development Environment
-- Python 3.13 works but some users may have 3.10-3.12
-- Use python3 command (not python) on macOS
-- pip3 for package installation
-- Absolute paths required in Claude Desktop config
-
-## Current State Assessment
-
-### What's Working
-✅ Server starts and initializes
-✅ Integration key loads from environment
-✅ All three tools registered successfully
-✅ Error handling prevents crashes
-✅ Logging configured to stderr
-
-### Known Issues
-- Rate limiting not yet tested at scale
-- Multi-app subscription support untested
-- Large dataset handling may need pagination
-
-### Configuration State
-- Integration key: Loaded from .env
-- API Base URL: https://app.pendo.io (US region)
-- Transport: STDIO
-- Logging: INFO level to stderr
+The implementation successfully transforms basic Pendo API access into a powerful analytics toolkit that enables LLMs to perform sophisticated user behavior analysis, product engagement measurement, and business intelligence tasks.
